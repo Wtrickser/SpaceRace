@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 
 pygame.init()
 screen = pygame.display.set_mode((1280,720))
@@ -34,26 +34,38 @@ class Meteor(pygame.sprite.Sprite):
     super().__init__()
     self.image = pygame.image.load("Meteor1.png")
     self.rect = self.image.get_rect(center = (x_pos,y_pos))
+    self.x_v = x_v
+    self.y_v = y_v
   
   def update(self):
-    self.rect
+    self.rect.centerx += self.x_v
+    self.rect.centery += self.y_v
 
-meteor1 = Meteor('Meteor1.png',400,400,1,1)
 meteor_group = pygame.sprite.Group()
-meteor_group.add(meteor1)
+
+METEOR_EVENT = pygame.USEREVENT
+pygame.time.set_timer(METEOR_EVENT,250)
 
 while True:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       pygame.quit()
       sys.exit()
-  
+    if event.type == METEOR_EVENT:
+      meteor_path = random.choice(('Meteor1.png','Meteor2.png','Meteor3.png'))
+      random_x_pos = random.randrange(0,1280)
+      random_y_pos = random.randrange(-500,-50)
+      random_x_v = random.randrange(-1,1)
+      random_y_v = random.randrange(4,10)
+      meteor = Meteor(meteor_path,random_x_pos,random_y_pos,random_x_v,random_y_v)
+      meteor_group.add(meteor)
   screen.fill((42,45,51))
   
   spaceship_group.draw(screen)
   spaceship_group.update()
 
   meteor_group.draw(screen)
+  meteor_group.update()
 
   pygame.display.update()
   clock.tick(120)
