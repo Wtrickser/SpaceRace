@@ -3,7 +3,7 @@ import pygame, sys, random
 pygame.init()
 screen = pygame.display.set_mode((1280,720))
 clock = pygame.time.Clock()
-pygame.mouse.set_visible(False)
+
 game_font = pygame.font.Font(None,40)
 
 class SpaceShip(pygame.sprite.Sprite):
@@ -67,6 +67,7 @@ class Laser(pygame.sprite.Sprite):
 laser_group = pygame.sprite.Group()
 
 def main_game():
+  pygame.mouse.set_visible(False)
   laser_group.draw(screen)
   laser_group.update()
 
@@ -83,6 +84,7 @@ def main_game():
     pygame.sprite.spritecollide(laser,meteor_group,True)
 
 def end_game():
+  pygame.mouse.set_visible(True)
   text_surface = game_font.render('Game Over', True, (255,255,255))
   text_rect = text_surface.get_rect(center = (640,360))
   screen.blit(text_surface, text_rect)
@@ -100,8 +102,11 @@ while True:
       random_y_v = random.randrange(4,10)
       meteor = Meteor(meteor_path,random_x_pos,random_y_pos,random_x_v,random_y_v)
       meteor_group.add(meteor)
+    if event.type == pygame.MOUSEBUTTONDOWN and spaceship_group.sprite.health <= 0:
+      spaceship_group.sprite.health = 5
+      meteor_group.empty()
     if event.type == pygame.MOUSEBUTTONDOWN:
-      new_laser = Laser('Laser.png', event.pos,15)
+      new_laser = Laser('Laser.png',event.pos,15)
       laser_group.add(new_laser)
 
   screen.fill((42,45,51))
